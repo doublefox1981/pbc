@@ -31,10 +31,14 @@ checkuserdata(lua_State *L, int index) {
 	return ud;
 }
 
+static struct pbc_env* genv = NULL;
+
 static int
 _env_new(lua_State *L) {
-	struct pbc_env * env = pbc_new();
-	lua_pushlightuserdata(L, env);
+	if (genv == NULL) {
+		genv = pbc_new();
+	}
+	lua_pushlightuserdata(L, genv);
 	return 1;
 }
 
