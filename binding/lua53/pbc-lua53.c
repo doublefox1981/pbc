@@ -815,7 +815,7 @@ _clear_gcobj(lua_State *L) {
 	free(obj->msg);
 	obj->pat = NULL;
 	obj->msg = NULL;
-	if (obj->env) {
+	if (obj->env && obj->env != genv) {
 		pbc_delete(obj->env);
 		obj->env = NULL;
 	}
