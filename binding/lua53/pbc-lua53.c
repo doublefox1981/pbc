@@ -35,11 +35,18 @@ static struct pbc_env* genv = NULL;
 
 static int
 _env_new(lua_State *L) {
-	if (genv == NULL) {
-		genv = pbc_new();
-	}
-	lua_pushlightuserdata(L, genv);
+	struct pbc_env * env = pbc_new();
+	lua_pushlightuserdata(L, env);
+    if(!genv){
+        genv = env;
+    }
 	return 1;
+}
+
+static int
+_env_get_global(lua_State *L){
+    lua_pushlightuserdata(L，genv);
+    return 1;
 }
 
 static int
@@ -815,7 +822,7 @@ _clear_gcobj(lua_State *L) {
 	free(obj->msg);
 	obj->pat = NULL;
 	obj->msg = NULL;
-	if (obj->env && obj->env != genv) {
+	if (obj->env) {
 		pbc_delete(obj->env);
 		obj->env = NULL;
 	}
@@ -872,6 +879,7 @@ int
 luaopen_protobuf_c(lua_State *L) {
 	luaL_Reg reg[] = {
 		{"_env_new" , _env_new },
+        {"_env_get_global", _env_get_global },
 		{"_env_register" , _env_register },
 		{"_env_type", _env_type },
 		{"_rmessage_new" , _rmessage_new },
